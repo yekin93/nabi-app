@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\projects\\node-ts2\\src\\logging\\.120293d413b16fa870467396d4b03fbc6d65935c-audit.json",
+    "files": [
+        {
+            "date": 1660375252929,
+            "name": "C:\\projects\\node-ts2\\src\\logging\\nabi-2022-08-13.log",
+            "hash": "fbfe8631392bbd7f4857c7cbf4e915e0be3d3030bc0a845dbc28f701623a71f9"
+        },
+        {
+            "date": 1660484457324,
+            "name": "C:\\projects\\node-ts2\\src\\logging\\nabi-2022-08-14.log",
+            "hash": "2456e10e3ba611ba930b6de444da3807caa00df39f87c6b1365b89de153c7f2b"
+        }
+    ],
+    "hashType": "sha256"
+}

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\projects\\node-ts2\\dist\\utils\\logging\\.9b766c83390e238169cea531bbeea8864a36ef73-audit.json",
+    "files": [
+        {
+            "date": 1660345438124,
+            "name": "C:\\projects\\node-ts2\\dist\\utils\\logging\\nabi-2022-08-13-01.log",
+            "hash": "2335b4b5a7b5149e23f00e49d74add1de5c39f5056965e2a7c92d4d1345448c8"
+        }
+    ],
+    "hashType": "sha256"
+}
