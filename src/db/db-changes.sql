@@ -1,3 +1,5 @@
+ALTER TABLE company ADD COLUMN avatar VARCHAR(255) AFTER `password`;
+
 ALTER TABLE company ADD COLUMN is_active INT(2) DEFAULT 0 AFTER `password`;
 
 CREATE TABLE company (

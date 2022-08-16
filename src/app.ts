@@ -1,5 +1,7 @@
 import express, { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 import { errorHandler } from './middleware/errorHandler';
+import path from 'path';
+
  
 const app = express();
 
@@ -8,6 +10,10 @@ import router from './routers/index';
 app.use(express.urlencoded({
     extended: true
 }));
+
+//app.use(multer({dest: 'public'}).single('avatar'));
+app.use(express.static(path.join(__dirname, '../', 'public')));
+
 
 app.use('/api', router);
 
