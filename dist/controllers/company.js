@@ -23,12 +23,12 @@ class CompanyController {
                 const { name, email, password } = req.body;
                 const file = req.file;
                 console.log(file);
-                const company = new Company_1.Company(0, name, email, 0, new Date(), new Date());
-                //  const newCompany: Company = await this.companyService.newCompany(company, password);
-                // log.info(`new company is created: ${newCompany.getName} ${newCompany.getEmail}`);
+                const company = new Company_1.Company(0, name, email, 0, "", new Date(), new Date());
+                const newCompany = yield this.companyService.newCompany(company, password, file);
+                logger_1.default.info(`new company is created: ${newCompany.getName} ${newCompany.getEmail}`);
                 res.status(200).json({
                     status: true,
-                    company: company
+                    company: newCompany
                 });
             }
             catch (err) {

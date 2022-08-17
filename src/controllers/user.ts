@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { IRequest } from "../interfaces/IRequest";
 import { User } from "../models/User";
 import { UserService } from "../services/UserService";
 

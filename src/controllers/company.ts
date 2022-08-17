@@ -23,15 +23,14 @@ export class CompanyController {
      newCompany = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const {name, email, password } = req.body;
-            const file = req.file;
-           
+            const file: any = req.file;
             console.log(file);
-            const company: Company = new Company(0, name, email, 0, new Date(), new Date());
-            const newCompany: Company = await this.companyService.newCompany(company, password);
+            const company: Company = new Company(0, name, email, 0, "", new Date(), new Date());
+            const newCompany: Company = await this.companyService.newCompany(company, password, file);
             log.info(`new company is created: ${newCompany.getName} ${newCompany.getEmail}`);
             res.status(200).json({
                 status: true,
-                company: company
+                company: newCompany
             });
         } catch (err) {
             return next(err);

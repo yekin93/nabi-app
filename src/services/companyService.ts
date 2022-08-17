@@ -5,6 +5,7 @@ import { CompanyRepo } from "../repositories/CompanyRepo";
 import { ICompanyService } from "./interfaces/ICompanyService";
 import log from '../utils/logger';
 import { User } from "../models/User";
+import { getFileExt } from "../utils/fileUtil";
 
 
 
@@ -28,11 +29,17 @@ export class CompanyService implements ICompanyService {
         return this.instance;
     }
 
-    async newCompany(company: Company, password: string): Promise<Company> {
+    async newCompany(company: Company, password: string, file: any): Promise<Company> {
         let conn!: Connection;
         try{
             conn = await this.db.getConnection();
             const companyId: number = await this.companyRepo.newCompany(conn, company, password);
+            if(file){
+                const fileExt: string | null = getFileExt(file.originalname);
+                if(fileExt){
+                    await this.companyRepo.insertCompanyAvatar(conn, companyId, file.filename, fileExt);
+                }
+            }
             const newCompany: Company = await this.companyRepo.getById(conn, companyId);
             this.db.closeConnection(conn, true);
             return newCompany;

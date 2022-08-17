@@ -33,8 +33,9 @@ const { combine, timestamp, label, prettyPrint, colorize, printf, errors } = win
 const myFormat = printf((info) => {
     return `${info.level}: ${info.timestamp} ${info.message}: ${info.stack ? info.stack : ''}`;
 });
+const logPath = path_1.default.join('C://', 'nabi-app', 'logging', 'nabi-%DATE%.log');
 const transport = new winston_daily_rotate_file_1.default({
-    filename: path_1.default.join(__dirname, '../../', 'src', 'logging', 'nabi-%DATE%.log'),
+    filename: logPath,
     datePattern: 'YYYY-MM-DD',
     zippedArchive: true,
     maxSize: '20m',

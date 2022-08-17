@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyService = void 0;
 const mysql2_1 = require("../db/mysql2");
 const CompanyRepo_1 = require("../repositories/CompanyRepo");
+const fileUtil_1 = require("../utils/fileUtil");
 class CompanyService {
     constructor() {
         this.companyRepo = CompanyRepo_1.CompanyRepo.getInstance();
@@ -23,12 +24,18 @@ class CompanyService {
         }
         return this.instance;
     }
-    newCompany(company, password) {
+    newCompany(company, password, file) {
         return __awaiter(this, void 0, void 0, function* () {
             let conn;
             try {
                 conn = yield this.db.getConnection();
                 const companyId = yield this.companyRepo.newCompany(conn, company, password);
+                if (file) {
+                    const fileExt = (0, fileUtil_1.getFileExt)(file.originalname);
+                    if (fileExt) {
+                        yield this.companyRepo.insertCompanyAvatar(conn, companyId, file.filename, fileExt);
+                    }
+                }
                 const newCompany = yield this.companyRepo.getById(conn, companyId);
                 this.db.closeConnection(conn, true);
                 return newCompany;
