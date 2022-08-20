@@ -108,8 +108,9 @@ class UserService {
                     token = (0, uuid_1.v4)();
                     yield this.userRepo.insertSession(conn, user.getId, token);
                 }
+                const session = token ? yield this.userRepo.getSessionByToken(conn, token) : null;
                 this.db.closeConnection(conn, true);
-                return token;
+                return session;
             }
             catch (err) {
                 this.db.closeConnection(conn, false);

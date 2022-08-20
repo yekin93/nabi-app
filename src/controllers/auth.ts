@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { Session } from "../models/Session";
 import { User } from "../models/User";
 import { UserService } from "../services/UserService";
 import log from '../utils/logger';
@@ -36,18 +37,17 @@ export class AuthController {
     login = async (req: Request, res: Response, next: NextFunction) => {
         try{
             const {email, password} = req.body;
-            const token: string | null = await this.userService.login(email, password);
-            let user: User | null = null;
-            if(token){
-                user = await this.userService.getUserBySession(token);
+            const session: Session | null = await this.userService.login(email, password);
+            let user: User | null = session ? session.getUser : null;
+            if(user){
                 res.status(200).json({
                     status: true,
-                    token,
+                    token: session?.getToken,
                     user
                 });
             } else {
                 res.status(200).json({
-                    status: true,
+                    status: false,
                     message: `Could not find user with ${email}`
                 })
             }
@@ -64,7 +64,7 @@ export class AuthController {
             if(!token){
                 throw new Error('You already logout');
             }
-            const email = req.loggedinUser.getEmail;
+            const email = req.loggedinUser ? req.loggedinUser.getEmail : null;
             await this.userService.logout(token);
             log.info(`${email} is logout`);
             res.status(200).json({

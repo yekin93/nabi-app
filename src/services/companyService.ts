@@ -6,6 +6,8 @@ import { ICompanyService } from "./interfaces/ICompanyService";
 import log from '../utils/logger';
 import { User } from "../models/User";
 import { getFileExt } from "../utils/fileUtil";
+import {v4 as uuid} from 'uuid';
+import { CompanySession } from "../models/CompanySession";
 
 
 
@@ -55,9 +57,57 @@ export class CompanyService implements ICompanyService {
         try {
             conn = await this.db.getConnection();
             const company: Company = await this.companyRepo.getById(conn, id);
-            await this.companyRepo.activateCompanyById(conn, id);
+            if(company.getIsActive == 1) throw new Error('This company already activated');
+            await this.companyRepo.activateCompanyById(conn, company.getId);
             this.db.closeConnection(conn, true);
         } catch (err) {
+            this.db.closeConnection(conn, false);
+            throw err;
+        }
+    }
+
+    async getCompanyBySessionId(token: string): Promise<Company | null> {
+        let conn!: Connection;
+        try{
+            conn = await this.db.getConnection();
+            const companySession: CompanySession | null = await this.companyRepo.getCompanyBySessionId(conn,token);
+            const company: Company | null = companySession ? companySession.getCompany : null;
+            this.db.closeConnection(conn, true);
+            return company;
+        } catch (err) {
+            this.db.closeConnection(conn, false);
+            throw err;
+        }
+    }
+
+    async login(email: string, password: string): Promise<CompanySession | null> {
+        let conn!: Connection;
+        try {
+            conn = await this.db.getConnection();
+
+            let token: string | null = null;
+            const company: Company | null = await this.companyRepo.getCompanyByEmailAndPassword(conn, email, password);
+            if(company) {
+                if(company.getIsActive === 0) throw new Error("Company is not active, Please activate...");
+                token = uuid();
+                await this.companyRepo.insertCompanySession(conn, token, company.getId);
+            }
+            const companySession: CompanySession | null = token ? await this.companyRepo.getCompanyBySessionId(conn, token) : null;
+            this.db.closeConnection(conn, true);
+            return companySession;
+        } catch (err) {
+            this.db.closeConnection(conn, false);
+            throw err;
+        }
+    }
+
+    async logout(token: string): Promise<void> {
+        let conn!: Connection;
+        try {
+            conn = await this.db.getConnection();
+            await this.companyRepo.removeSession(conn, token);
+            this.db.closeConnection(conn, true);
+        } catch (err){
             this.db.closeConnection(conn, false);
             throw err;
         }

@@ -30,6 +30,10 @@ export class Company {
                 company.created_time company_created_time`
     }
 
+    public static from(): string {
+        return 'FROM company LEFT JOIN company_avatar ON company.id = company_avatar.company_id';
+    }
+
     public static row(row: ICompany): Company {
         return new Company(row.company_id, 
                             row.company_name,

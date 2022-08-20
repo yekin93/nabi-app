@@ -82,7 +82,7 @@ export class UserService {
         }
     }
 
-    async login(email: string, password: string): Promise<string | null> {
+    async login(email: string, password: string): Promise<Session | null> {
         let conn!: Connection;
         try{
             conn = await this.db.getConnection();
@@ -94,8 +94,9 @@ export class UserService {
                 token = uuid();
                 await this.userRepo.insertSession(conn, user.getId, token);
             }
+            const session: Session | null = token ? await this.userRepo.getSessionByToken(conn, token) : null;
             this.db.closeConnection(conn, true);
-            return token;
+            return session;
         } catch(err){
             this.db.closeConnection(conn, false);
             throw err;

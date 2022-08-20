@@ -24,7 +24,7 @@ export class CompanyController {
         try {
             const {name, email, password } = req.body;
             const file: any = req.file;
-            console.log(file);
+            console.log(req);
             const company: Company = new Company(0, name, email, 0, "", new Date(), new Date());
             const newCompany: Company = await this.companyService.newCompany(company, password, file);
             log.info(`new company is created: ${newCompany.getName} ${newCompany.getEmail}`);

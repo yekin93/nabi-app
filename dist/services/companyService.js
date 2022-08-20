@@ -13,6 +13,7 @@ exports.CompanyService = void 0;
 const mysql2_1 = require("../db/mysql2");
 const CompanyRepo_1 = require("../repositories/CompanyRepo");
 const fileUtil_1 = require("../utils/fileUtil");
+const uuid_1 = require("uuid");
 class CompanyService {
     constructor() {
         this.companyRepo = CompanyRepo_1.CompanyRepo.getInstance();
@@ -52,7 +53,62 @@ class CompanyService {
             try {
                 conn = yield this.db.getConnection();
                 const company = yield this.companyRepo.getById(conn, id);
-                yield this.companyRepo.activateCompanyById(conn, id);
+                if (company.getIsActive == 1)
+                    throw new Error('This company already activated');
+                yield this.companyRepo.activateCompanyById(conn, company.getId);
+                this.db.closeConnection(conn, true);
+            }
+            catch (err) {
+                this.db.closeConnection(conn, false);
+                throw err;
+            }
+        });
+    }
+    getCompanyBySessionId(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn;
+            try {
+                conn = yield this.db.getConnection();
+                const companySession = yield this.companyRepo.getCompanyBySessionId(conn, token);
+                const company = companySession ? companySession.getCompany : null;
+                this.db.closeConnection(conn, true);
+                return company;
+            }
+            catch (err) {
+                this.db.closeConnection(conn, false);
+                throw err;
+            }
+        });
+    }
+    login(email, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn;
+            try {
+                conn = yield this.db.getConnection();
+                let token = null;
+                const company = yield this.companyRepo.getCompanyByEmailAndPassword(conn, email, password);
+                if (company) {
+                    if (company.getIsActive === 0)
+                        throw new Error("Company is not active, Please activate...");
+                    token = (0, uuid_1.v4)();
+                    yield this.companyRepo.insertCompanySession(conn, token, company.getId);
+                }
+                const companySession = token ? yield this.companyRepo.getCompanyBySessionId(conn, token) : null;
+                this.db.closeConnection(conn, true);
+                return companySession;
+            }
+            catch (err) {
+                this.db.closeConnection(conn, false);
+                throw err;
+            }
+        });
+    }
+    logout(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn;
+            try {
+                conn = yield this.db.getConnection();
+                yield this.companyRepo.removeSession(conn, token);
                 this.db.closeConnection(conn, true);
             }
             catch (err) {

@@ -34,19 +34,18 @@ class AuthController {
         this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { email, password } = req.body;
-                const token = yield this.userService.login(email, password);
-                let user = null;
-                if (token) {
-                    user = yield this.userService.getUserBySession(token);
+                const session = yield this.userService.login(email, password);
+                let user = session ? session.getUser : null;
+                if (user) {
                     res.status(200).json({
                         status: true,
-                        token,
+                        token: session === null || session === void 0 ? void 0 : session.getToken,
                         user
                     });
                 }
                 else {
                     res.status(200).json({
-                        status: true,
+                        status: false,
                         message: `Could not find user with ${email}`
                     });
                 }
@@ -61,7 +60,7 @@ class AuthController {
                 if (!token) {
                     throw new Error('You already logout');
                 }
-                const email = req.loggedinUser.getEmail;
+                const email = req.loggedinUser ? req.loggedinUser.getEmail : null;
                 yield this.userService.logout(token);
                 logger_1.default.info(`${email} is logout`);
                 res.status(200).json({

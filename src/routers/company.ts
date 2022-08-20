@@ -1,9 +1,6 @@
 import { Router } from "express";
 import { CompanyController } from "../controllers/company";
 import { auth } from "../middleware/auth";
-import multer, { Multer } from 'multer';
-import path from "path";
-import { Express } from "express";
 import { companyAvatarUpload } from "../middleware/imageUpload";
 const router = Router();
 

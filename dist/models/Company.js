@@ -20,6 +20,9 @@ class Company {
                 company.modified_time company_modified_time, 
                 company.created_time company_created_time`;
     }
+    static from() {
+        return 'FROM company LEFT JOIN company_avatar ON company.id = company_avatar.company_id';
+    }
     static row(row) {
         return new Company(row.company_id, row.company_name, row.company_email, row.company_is_active, row.company_avatar_avatar, row.company_modified_time, row.company_created_time);
     }

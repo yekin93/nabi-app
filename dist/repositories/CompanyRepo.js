@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyRepo = void 0;
 const Company_1 = require("../models/Company");
 const logger_1 = __importDefault(require("../utils/logger"));
+const CompanySession_1 = require("../models/CompanySession");
 class CompanyRepo {
     static getInstance() {
         if (!this.instance) {
@@ -32,8 +33,9 @@ class CompanyRepo {
     getById(conn, id) {
         return __awaiter(this, void 0, void 0, function* () {
             let company;
-            const query = `SELECT ${Company_1.Company.sql()} FROM company 
-                        LEFT JOIN company_avatar ON company.id = company_avatar.company_id
+            const query = `SELECT 
+                        ${Company_1.Company.sql()} 
+                        ${Company_1.Company.from()}
                         WHERE company.id = ?`;
             const [rows] = yield conn.execute(query, [id]);
             rows.map(row => company = Company_1.Company.row(row));
@@ -46,11 +48,57 @@ class CompanyRepo {
             yield conn.execute(query, [id]);
         });
     }
+    getCompanyAvatarIdByCompanyId(conn, companyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return 1;
+        });
+    }
     insertCompanyAvatar(conn, companyId, fileName, fileExt) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = `INSERT INTO company_avatar (company_id, filename, file_ext, modified_time, created_time) VALUES (?, ?, ?, NOW(), NOW())`;
             logger_1.default.info(`companyId: ${companyId} - fileName: ${fileName} - fileExt: ${fileExt}`);
             yield conn.execute(query, [companyId, fileName, fileExt]);
+        });
+    }
+    updateCompanyAvatar(conn, companyId, fileName, fileExt) {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
+    }
+    getCompanyByEmailAndPassword(conn, email, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `SELECT ${Company_1.Company.sql()} ${Company_1.Company.from()} WHERE email = ? AND password = PASSWORD2(?)`;
+            const [rows] = yield conn.execute(query, [email, password]);
+            let company = null;
+            rows.map((row) => company = Company_1.Company.row(row));
+            return company;
+        });
+    }
+    insertCompanySession(conn, token, companyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `INSERT INTO company_session (company_id, token, created_time) VALUES (?, ?, NOW())`;
+            yield conn.execute(query, [companyId, token]);
+        });
+    }
+    removeSession(conn, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield conn.execute('UPDATE company_session SET is_deleted = 1 WHERE token = ?', [token]);
+        });
+    }
+    getCompanyBySessionId(conn, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `SELECT ${CompanySession_1.CompanySession.sql()}, ${Company_1.Company.sql()} FROM company_session 
+                        LEFT JOIN company ON company.id = company_session.company_id 
+                        LEFT JOIN company_avatar ON company_avatar.company_id = company.id
+                        WHERE company_session.token = ? AND company_session.is_deleted = 0`;
+            const [rows] = yield conn.execute(query, [token]);
+            let companySession = null;
+            logger_1.default.info(`getCompanyBySessionId: sql: ${query} - rows.length = ${rows.length}`);
+            rows.map(row => {
+                logger_1.default.info(row.company_session_id);
+                companySession = CompanySession_1.CompanySession.row(row);
+                companySession.setCompany = Company_1.Company.row(row);
+            });
+            return companySession;
         });
     }
 }

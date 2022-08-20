@@ -2,9 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_1 = require("../controllers/auth");
+const companyAuth_1 = require("../controllers/auth/companyAuth");
 const auth_2 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 const authController = auth_1.AuthController.getInstance();
+const companyAuthController = companyAuth_1.CompanyAuthController.getInstance();
+router.get('/company-login', companyAuthController.login);
 router.post('/signup', authController.signup);
 router.get('/login', authController.login);
 router.get('/logout', auth_2.auth, authController.logout);
