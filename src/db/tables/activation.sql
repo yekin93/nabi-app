@@ -1,0 +1,12 @@
+CREATE TABLE `activation` (
+id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+user_id INT(11) UNSIGNED NOT NULL,
+token VARCHAR(255),
+created_time DATETIME,
+PRIMARY KEY (id),
+INDEX IX_activation_token (token),
+CONSTRAINT FK_activation_user_id FOREIGN KEY (user_id)
+REFERENCES `user` (id)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION
+);
