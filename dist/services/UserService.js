@@ -105,7 +105,6 @@ class UserService {
                 conn = yield this.db.getConnection();
                 let token = null;
                 const user = yield this.userRepo.getUserByEmailAndPassword(conn, email, password);
-                logger_1.default.info(`login user: ${user}`);
                 if (user) {
                     if (user.getIsActive == 0)
                         throw new Error('User is not active, Please activate user!');
