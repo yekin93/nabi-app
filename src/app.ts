@@ -11,7 +11,6 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-//app.use(multer({dest: 'public'}).single('avatar'));
 app.use(express.static(path.join(__dirname, '../', 'public')));
 app.use('/images', express.static(path.join('C://', 'nabi-app', 'images')));
 

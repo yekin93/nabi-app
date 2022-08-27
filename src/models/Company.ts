@@ -25,7 +25,7 @@ export class Company {
                 company.name company_name, 
                 company.email company_email, 
                 company.is_active company_is_active,
-                CONCAT_WS('.', company_avatar.filename, company_avatar.file_ext) company_avatar_avatar, 
+                company_avatar.filename company_avatar_avatar, 
                 company.modified_time company_modified_time, 
                 company.created_time company_created_time`
     }

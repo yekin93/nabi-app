@@ -10,9 +10,13 @@
   "author": "yekin zulfikari",
   "license": "MIT",
   "dependencies": {
+    "@types/ejs": "^3.1.1",
+    "@types/nodemailer": "^6.4.5",
+    "ejs": "^3.1.8",
     "express": "^4.18.1",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
+    "node-fetch": "^3.2.10",
     "nodemailer": "^6.7.8",
     "uuid": "^8.3.2",
     "winston": "^3.8.1",

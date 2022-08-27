@@ -18,10 +18,12 @@ const uuid_1 = require("uuid");
 const ActivationRepo_1 = require("../repositories/ActivationRepo");
 const logger_1 = __importDefault(require("../utils/logger"));
 const mysql2_1 = require("../db/mysql2");
+const UserMail_1 = require("../mail/UserMail");
 class UserService {
     constructor() {
         this.db = mysql2_1.MysqlDB.getInstance();
         this.userRepo = UserRepository_1.UserRepo.getInstance();
+        this.userMail = UserMail_1.UserMail.getInstance();
     }
     static getInstace() {
         if (!this.instance) {
@@ -68,6 +70,8 @@ class UserService {
                 const insertedId = yield this.userRepo.insertUser(conn, name, surname, email, password);
                 const user = yield this.userRepo.getUserById(conn, insertedId);
                 yield ActivationRepo_1.ActivationRepo.createActivation(conn, user.getId, token);
+                const link = `http://localhost:2015/api/activation/${token}`;
+                yield this.userMail.userConfirmation(user, link);
                 logger_1.default.info(`New user created ${user.getEmail}`);
                 this.db.closeConnection(conn, true);
                 return user;

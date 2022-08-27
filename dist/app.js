@@ -11,7 +11,6 @@ const index_1 = __importDefault(require("./routers/index"));
 app.use(express_1.default.urlencoded({
     extended: true
 }));
-//app.use(multer({dest: 'public'}).single('avatar'));
 app.use(express_1.default.static(path_1.default.join(__dirname, '../', 'public')));
 app.use('/images', express_1.default.static(path_1.default.join('C://', 'nabi-app', 'images')));
 app.use('/api', index_1.default);

@@ -50,8 +50,7 @@ export class CompanyAuthController {
     logout = async(req: Request, res: Response, next: NextFunction) => {
         try {
             const token = req.companySessionToken;
-           
-            const email = req.loggedinUser ? req.loggedinUser.getEmail : null;
+            const email = req.loggedinCompany ? req.loggedinCompany.getEmail : null;
             await this.companyServise.logout(token);
             log.info(`${email} is logout`);
             res.status(200).json({

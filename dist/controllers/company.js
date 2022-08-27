@@ -20,11 +20,15 @@ class CompanyController {
     constructor() {
         this.newCompany = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, email, password } = req.body;
+                const name = req.body.name;
+                const email = req.body.email;
+                const password = req.body.password;
                 const file = req.file;
-                console.log(req);
                 const company = new Company_1.Company(0, name, email, 0, "", new Date(), new Date());
                 const newCompany = yield this.companyService.newCompany(company, password, file);
+                if (newCompany && newCompany.getCompanyAvatar) {
+                    newCompany.setCompanyAvatar = `${req.protocol}://${req.headers.host}/images/company/${newCompany.getCompanyAvatar}`;
+                }
                 logger_1.default.info(`new company is created: ${newCompany.getName} ${newCompany.getEmail}`);
                 res.status(200).json({
                     status: true,

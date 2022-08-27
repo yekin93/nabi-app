@@ -24,12 +24,10 @@ const companyAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     const company = yield compantService.getCompanyBySessionId(token);
     if (company) {
         req.loggedinCompany = company;
-        req.sessionToken = token;
+        req.companySessionToken = token;
         next();
     }
     else {
-        req.loggedinCompany = null;
-        req.companySessionToken = null;
         res.status(401).json({
             status: false,
             message: 'Please login...'

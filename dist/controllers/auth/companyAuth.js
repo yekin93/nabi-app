@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyAuthController = void 0;
 const companyService_1 = require("../../services/companyService");
+const logger_1 = __importDefault(require("../../utils/logger"));
 class CompanyAuthController {
     constructor() {
         this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -31,6 +35,21 @@ class CompanyAuthController {
                     status: true,
                     token: companySession === null || companySession === void 0 ? void 0 : companySession.getToken,
                     company
+                });
+            }
+            catch (error) {
+                return next(error);
+            }
+        });
+        this.logout = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.companySessionToken;
+                const email = req.loggedinCompany ? req.loggedinCompany.getEmail : null;
+                yield this.companyServise.logout(token);
+                logger_1.default.info(`${email} is logout`);
+                res.status(200).json({
+                    status: true,
+                    message: `${email} is logouted`
                 });
             }
             catch (error) {

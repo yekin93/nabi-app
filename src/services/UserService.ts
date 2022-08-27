@@ -6,16 +6,19 @@ import { ActivationRepo } from '../repositories/ActivationRepo';
 import { Session } from '../models/Session';
 import log from '../utils/logger';
 import { MysqlDB } from '../db/mysql2';
+import { UserMail } from '../mail/UserMail';
 
 export class UserService { 
 
     private static instance: UserService;
     private db: MysqlDB;
     private userRepo: UserRepo;
+    private userMail: UserMail;
 
     constructor(){
         this.db = MysqlDB.getInstance();
         this.userRepo = UserRepo.getInstance();
+        this.userMail = UserMail.getInstance();
     }
 
     static getInstace(): UserService {
@@ -59,6 +62,8 @@ export class UserService {
             const insertedId: number = await this.userRepo.insertUser(conn, name, surname, email, password);
             const user: User = await this.userRepo.getUserById(conn, insertedId);
             await ActivationRepo.createActivation(conn, user.getId, token);
+            const link: string = `http://localhost:2015/api/activation/${token}`;
+            await this.userMail.userConfirmation(user, link);
             log.info(`New user created ${user.getEmail}`);
             this.db.closeConnection(conn, true);
             return user
@@ -88,7 +93,6 @@ export class UserService {
             conn = await this.db.getConnection();
             let token: string | null = null;
             const user: User = await this.userRepo.getUserByEmailAndPassword(conn, email, password);
-            log.info(`login user: ${user}`);
             if(user){
                 if(user.getIsActive == 0) throw new Error('User is not active, Please activate user!');
                 token = uuid();

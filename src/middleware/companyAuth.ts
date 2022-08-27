@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Company } from "../models/Company";
 import { CompanyService } from "../services/companyService";
 
@@ -13,7 +13,7 @@ declare global {
 
 const compantService: CompanyService = CompanyService.getInstance();
 
-export const companyAuth = async (req: Request, res: Response, next: NewableFunction) => {
+export const companyAuth = async (req: Request, res: Response, next: NextFunction) => {
     const bearer: string = req.headers.authorization ? req.headers.authorization : '';
     const token: string = bearer.split(' ')[1];
     
@@ -27,7 +27,7 @@ export const companyAuth = async (req: Request, res: Response, next: NewableFunc
     const company: Company | null = await compantService.getCompanyBySessionId(token);
     if(company){
         req.loggedinCompany = company;
-        req.sessionToken = token;
+        req.companySessionToken = token;
         next();
     } else {
         res.status(401).json({
