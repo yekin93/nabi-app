@@ -46,9 +46,9 @@ export class UserRepo implements IUserRepo {
         });
         return user;
     }
-    async getSessionByToken(conn: Connection, token: string): Promise<Session> {
-        let session!: Session;
-        let user!: User;
+    async getSessionByToken(conn: Connection, token: string): Promise<Session | null> {
+        let session: Session | null = null;
+        let user: User | null = null;
         let query = `SELECT ${Session.sql()}, ${User.sql()} FROM session LEFT JOIN user ON session.user_id = user.id WHERE session.is_deleted = 0 AND session.token = ?`;
         log.info('getSessionByToken sql:'+ query);
         const [rows] = await conn.execute<any[]>(query, [token]);

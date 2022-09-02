@@ -1,7 +1,6 @@
-import express, { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
+import express from 'express';
 import { errorHandler } from './middleware/errorHandler';
 import path from 'path';
-
  
 const app = express();
 

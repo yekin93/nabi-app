@@ -73,5 +73,12 @@ class User {
     set setCreatedTime(createdTime) {
         this.createdTime = createdTime;
     }
+    get getPermssions() {
+        return this.permissions;
+        ;
+    }
+    set setPermissions(permissions) {
+        this.permissions = permissions;
+    }
 }
 exports.User = User;

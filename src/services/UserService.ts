@@ -7,6 +7,8 @@ import { Session } from '../models/Session';
 import log from '../utils/logger';
 import { MysqlDB } from '../db/mysql2';
 import { UserMail } from '../mail/UserMail';
+import { RolePermissionRepo } from '../repositories/RolePermissionRepo';
+import { Permission } from '../models/Permission';
 
 export class UserService { 
 
@@ -14,11 +16,13 @@ export class UserService {
     private db: MysqlDB;
     private userRepo: UserRepo;
     private userMail: UserMail;
+    private rolePermissionRepo: RolePermissionRepo;
 
     constructor(){
         this.db = MysqlDB.getInstance();
         this.userRepo = UserRepo.getInstance();
         this.userMail = UserMail.getInstance();
+        this.rolePermissionRepo = RolePermissionRepo.getInstance();
     }
 
     static getInstace(): UserService {
@@ -77,7 +81,7 @@ export class UserService {
         let conn!: Connection;
         try {
             conn = await this.db.getConnection();
-            const session: Session = await this.userRepo.getSessionByToken(conn, token);
+            const session: Session | null = await this.userRepo.getSessionByToken(conn, token);
             const user: User | null = session ? session.getUser : null;
             this.db.closeConnection(conn, true);
             return user;
@@ -99,6 +103,10 @@ export class UserService {
                 await this.userRepo.insertSession(conn, user.getId, token);
             }
             const session: Session | null = token ? await this.userRepo.getSessionByToken(conn, token) : null;
+            const permissions: Permission[] | null = session ? await this.rolePermissionRepo.getPermissionsByUserId(conn, session.getUser.getId) : null;
+            if(session){
+                session.getUser.setPermissions = permissions;
+            }
             this.db.closeConnection(conn, true);
             return session;
         } catch(err){

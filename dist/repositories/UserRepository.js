@@ -65,8 +65,8 @@ class UserRepo {
     }
     getSessionByToken(conn, token) {
         return __awaiter(this, void 0, void 0, function* () {
-            let session;
-            let user;
+            let session = null;
+            let user = null;
             let query = `SELECT ${Session_1.Session.sql()}, ${User_1.User.sql()} FROM session LEFT JOIN user ON session.user_id = user.id WHERE session.is_deleted = 0 AND session.token = ?`;
             logger_1.default.info('getSessionByToken sql:' + query);
             const [rows] = yield conn.execute(query, [token]);

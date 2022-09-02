@@ -19,11 +19,13 @@ const ActivationRepo_1 = require("../repositories/ActivationRepo");
 const logger_1 = __importDefault(require("../utils/logger"));
 const mysql2_1 = require("../db/mysql2");
 const UserMail_1 = require("../mail/UserMail");
+const RolePermissionRepo_1 = require("../repositories/RolePermissionRepo");
 class UserService {
     constructor() {
         this.db = mysql2_1.MysqlDB.getInstance();
         this.userRepo = UserRepository_1.UserRepo.getInstance();
         this.userMail = UserMail_1.UserMail.getInstance();
+        this.rolePermissionRepo = RolePermissionRepo_1.RolePermissionRepo.getInstance();
     }
     static getInstace() {
         if (!this.instance) {
@@ -112,6 +114,10 @@ class UserService {
                     yield this.userRepo.insertSession(conn, user.getId, token);
                 }
                 const session = token ? yield this.userRepo.getSessionByToken(conn, token) : null;
+                const permissions = session ? yield this.rolePermissionRepo.getPermissionsByUserId(conn, session.getUser.getId) : null;
+                if (session) {
+                    session.getUser.setPermissions = permissions;
+                }
                 this.db.closeConnection(conn, true);
                 return session;
             }

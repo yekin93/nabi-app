@@ -1,4 +1,5 @@
 import { IUser } from "../interfaces/IUser";
+import { Permission } from "./Permission";
 
 export class User {
     private id: number;
@@ -9,6 +10,7 @@ export class User {
     private isDeleted: number;
     private modifiedTime: Date;
     private createdTime: Date;
+    private permissions!: Permission[] | null;
     
     constructor(id: number, name: string, surname: string, email: string, isActive: number, isDeleted: number, modifiedTime: Date, createdTime: Date) {
         this.id = id;
@@ -20,8 +22,6 @@ export class User {
         this.modifiedTime = modifiedTime;
         this.createdTime = createdTime;
     }
-
-    
 
     public static sql(): string {
         return "user.id user_id, "
@@ -100,5 +100,12 @@ export class User {
     }
     set setCreatedTime(createdTime: Date) {
         this.createdTime = createdTime;
+    }
+
+    get getPermssions(): Permission[] | null {
+        return this.permissions;;
+    }
+    set setPermissions(permissions: Permission[] | null) {
+        this.permissions = permissions;
     }
 }

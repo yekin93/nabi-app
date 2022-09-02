@@ -8,7 +8,7 @@ export interface IUserRepo {
     insertUser(conn: Connection, name: string, surname: string, email: string, password: string): Promise<number>;
     activateUserById(conn: Connection, id: number): Promise<void>;
     getUserByEmailAndPassword(conn: Connection, email: string, password: string): Promise<User>;
-    getSessionByToken(conn: Connection, token: string): Promise<Session>;
+    getSessionByToken(conn: Connection, token: string): Promise<Session | null>;
     insertSession(conn: Connection, userId: number, token: string): Promise<void>
     removeSession(conn: Connection, token: string): Promise<void>;
 }
