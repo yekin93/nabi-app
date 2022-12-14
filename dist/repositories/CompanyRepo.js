@@ -25,8 +25,8 @@ class CompanyRepo {
     }
     newCompany(conn, company, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const query = 'INSERT INTO company (name, email, password, modified_time, created_time) VALUES (?, ?, PASSWORD2(?), NOW(), NOW())';
-            const [ResultSetHeader] = yield conn.execute(query, [company.getName, company.getEmail, password]);
+            const query = 'INSERT INTO company (category_id, name, email, password, modified_time, created_time) VALUES (?, ?, ?, PASSWORD2(?), NOW(), NOW())';
+            const [ResultSetHeader] = yield conn.execute(query, [company.getCategoryId, company.getName, company.getEmail, password]);
             return ResultSetHeader.insertId;
         });
     }

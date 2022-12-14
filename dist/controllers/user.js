@@ -14,9 +14,9 @@ const UserService_1 = require("../services/UserService");
 class UserController {
     constructor() {
         this.getAll = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            console.log("YKN:", req.hostname, req.headers, req.protocol);
             const users = yield this.userService.getAll();
             res.json({
+                status: true,
                 users
             });
         });

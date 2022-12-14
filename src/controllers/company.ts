@@ -26,8 +26,9 @@ export class CompanyController {
             const name: string = req.body.name;
             const email: string = req.body.email;
             const password: string = req.body.password;
+            const categoryId: string = req.body.categoryId;
             const file: any = req.file;
-            const company: Company = new Company(0, name, email, 0, "", new Date(), new Date());
+            const company: Company = new Company(0, +categoryId, name, email, 0, "", new Date(), new Date());
             const newCompany: Company = await this.companyService.newCompany(company, password, file);
             if(newCompany && newCompany.getCompanyAvatar){
                 newCompany.setCompanyAvatar = `${req.protocol}://${req.headers.host}/images/company/${newCompany.getCompanyAvatar}`;
@@ -52,6 +53,17 @@ export class CompanyController {
                 status: true,
                 message: 'Company is activated'
             });
+        } catch (err){
+            return next(err);
+        }
+    }
+
+    companyApplication = async(req: Request, res: Response, next: NextFunction) => {
+        try {
+           console.log(req.params);
+           res.status(200).json({
+               status: true
+           });
         } catch (err){
             return next(err);
         }

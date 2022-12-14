@@ -2,6 +2,7 @@ import { ICompany } from "../interfaces/ICompany";
 
 export class Company {
     private id: number;
+    private categoryId: number;
     private name: string;
     private email: string;
     private isActive: number;
@@ -10,8 +11,9 @@ export class Company {
     private createdTime: Date;
 
 
-    constructor(id: number, name: string, email: string, isActive: number, companyAvatar: string, modifiedTime: Date, createdTime: Date) {
+    constructor(id: number, categoryId: number, name: string, email: string, isActive: number, companyAvatar: string, modifiedTime: Date, createdTime: Date) {
         this.id = id;
+        this.categoryId = categoryId;
         this.name = name;
         this.email = email;
         this.isActive = isActive;
@@ -22,6 +24,7 @@ export class Company {
 
     public static sql(): string {
         return `company.id company_id, 
+                company.category_id company_category_id,
                 company.name company_name, 
                 company.email company_email, 
                 company.is_active company_is_active,
@@ -36,6 +39,7 @@ export class Company {
 
     public static row(row: ICompany): Company {
         return new Company(row.company_id, 
+                            row.company_category_id,
                             row.company_name,
                             row.company_email,
                             row.company_is_active,
@@ -50,6 +54,13 @@ export class Company {
     }
     set setId(id: number) {
         this.id = id;
+    }
+
+    get getCategoryId(): number {
+        return this.categoryId;
+    }
+    set setCategoryId(categoryId: number) {
+        this.categoryId = categoryId;
     }
 
     get getName(): string {

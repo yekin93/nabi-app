@@ -36,6 +36,7 @@ export class AuthController {
 
     login = async (req: Request, res: Response, next: NextFunction) => {
         try{
+            console.log(req.body);
             const {email, password} = req.body;
             const session: Session | null = await this.userService.login(email, password);
             let user: User | null = session ? session.getUser : null;

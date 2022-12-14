@@ -19,10 +19,9 @@ export class UserController {
     }
 
     getAll = async (req: Request, res: Response, next: NextFunction) => {
-        console.log("YKN:", req.hostname, req.headers, req.protocol);
-        
         const users: Array<User> = await this.userService.getAll();
         res.json({
+            status: true,
             users
         });
     }

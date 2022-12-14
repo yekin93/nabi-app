@@ -11,6 +11,6 @@ const companyAuthController = companyAuth_1.CompanyAuthController.getInstance();
 router.get('/company-login', companyAuthController.login);
 router.get('/company-logout', companyAuth_2.companyAuth, companyAuthController.logout);
 router.post('/signup', authController.signup);
-router.get('/login', authController.login);
+router.post('/login', authController.login);
 router.get('/logout', auth_2.auth, authController.logout);
 exports.default = router;

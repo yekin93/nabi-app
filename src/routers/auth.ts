@@ -12,7 +12,7 @@ router.get('/company-login', companyAuthController.login);
 router.get('/company-logout', companyAuth, companyAuthController.logout);
 
 router.post('/signup', authController.signup);
-router.get('/login', authController.login);
+router.post('/login', authController.login);
 router.get('/logout', auth, authController.logout);
 
 

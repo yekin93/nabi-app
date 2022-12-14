@@ -23,8 +23,9 @@ class CompanyController {
                 const name = req.body.name;
                 const email = req.body.email;
                 const password = req.body.password;
+                const categoryId = req.body.categoryId;
                 const file = req.file;
-                const company = new Company_1.Company(0, name, email, 0, "", new Date(), new Date());
+                const company = new Company_1.Company(0, +categoryId, name, email, 0, "", new Date(), new Date());
                 const newCompany = yield this.companyService.newCompany(company, password, file);
                 if (newCompany && newCompany.getCompanyAvatar) {
                     newCompany.setCompanyAvatar = `${req.protocol}://${req.headers.host}/images/company/${newCompany.getCompanyAvatar}`;
@@ -48,6 +49,14 @@ class CompanyController {
                     status: true,
                     message: 'Company is activated'
                 });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+        this.companyApplication = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log(req.params);
             }
             catch (err) {
                 return next(err);

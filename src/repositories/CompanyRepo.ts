@@ -17,8 +17,8 @@ export class CompanyRepo implements ICompanyRepo {
     }
 
    async newCompany(conn: Connection, company: Company, password: string): Promise<number> {
-        const query: string = 'INSERT INTO company (name, email, password, modified_time, created_time) VALUES (?, ?, PASSWORD2(?), NOW(), NOW())';
-        const [ResultSetHeader]: any = await conn.execute(query, [company.getName, company.getEmail, password]);
+        const query: string = 'INSERT INTO company (category_id, name, email, password, modified_time, created_time) VALUES (?, ?, ?, PASSWORD2(?), NOW(), NOW())';
+        const [ResultSetHeader]: any = await conn.execute(query, [company.getCategoryId, company.getName, company.getEmail, password]);
         return ResultSetHeader.insertId;
     }
 

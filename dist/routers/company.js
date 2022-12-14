@@ -8,5 +8,6 @@ const router = (0, express_1.Router)();
 const companyController = company_1.CompanyController.getInstance();
 router.post('/new-company', imageUpload_1.companyAvatarUpload.single('avatar'), companyController.newCompany);
 router.post('/activate-company', auth_1.auth, companyController.activateCompanyById);
+router.post('/company-application', companyController.companyApplication);
 //router.post('/update-avatar', auth);
 exports.default = router;

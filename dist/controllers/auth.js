@@ -33,6 +33,7 @@ class AuthController {
         });
         this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(req.body);
                 const { email, password } = req.body;
                 const session = yield this.userService.login(email, password);
                 let user = session ? session.getUser : null;

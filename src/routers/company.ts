@@ -8,6 +8,7 @@ const companyController: CompanyController = CompanyController.getInstance();
 
 router.post('/new-company', companyAvatarUpload.single('avatar'), companyController.newCompany);
 router.post('/activate-company', auth, companyController.activateCompanyById);
+router.post('/company-application', companyController.companyApplication);
 //router.post('/update-avatar', auth);
 
 export default router;
