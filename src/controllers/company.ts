@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import multer from "multer";
 import { sendMail } from "../middleware/sendMail";
 import { Company } from "../models/Company";
+import { CompanyApplication } from "../models/CompanyApplication";
 import { CompanyService } from "../services/companyService";
 import log from '../utils/logger';
 
@@ -60,11 +61,40 @@ export class CompanyController {
 
     companyApplication = async(req: Request, res: Response, next: NextFunction) => {
         try {
-           console.log(req.params);
+            log.info('companyApplication request: ' + JSON.stringify(req.body));
+          const {firstName, surname, email, telNumber, country, city, postCode, companyName, categoryId, salesCategoryId} = req.body;
+          const companyApplication: CompanyApplication = new CompanyApplication(0, firstName, surname, email, telNumber, country, city, postCode, companyName, categoryId, salesCategoryId, 0, null, null,0);
+          await this.companyService.companyApplication(companyApplication);
            res.status(200).json({
-               status: true
+               status: true,
+               message: 'Successfuly Company application'
            });
         } catch (err){
+            return next(err);
+        }
+    }
+
+    getNotAcceptedCompanyApplications = async(req: Request, res: Response, next: NextFunction) => {
+        try {
+            const companyApplications: CompanyApplication[] = await this.companyService.getNotAcceptedCompaynApplication();
+            res.status(200).json({
+                status: true,
+                applications: companyApplications
+            });
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    getCompanyApplicationById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const {id} = req.body;
+            const companyApplication: CompanyApplication | null = await this.companyService.getCompanyApplicationById(id);
+            res.status(200).json({
+                status: true,
+                companyApplication
+            });
+        } catch (err) {
             return next(err);
         }
     }

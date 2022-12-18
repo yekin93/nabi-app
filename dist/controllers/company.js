@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyController = void 0;
 const Company_1 = require("../models/Company");
+const CompanyApplication_1 = require("../models/CompanyApplication");
 const companyService_1 = require("../services/companyService");
 const logger_1 = __importDefault(require("../utils/logger"));
 class CompanyController {
@@ -56,7 +57,39 @@ class CompanyController {
         });
         this.companyApplication = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.params);
+                logger_1.default.info('companyApplication request: ' + JSON.stringify(req.body));
+                const { firstName, surname, email, telNumber, country, city, postCode, companyName, categoryId, salesCategoryId } = req.body;
+                const companyApplication = new CompanyApplication_1.CompanyApplication(0, firstName, surname, email, telNumber, country, city, postCode, companyName, categoryId, salesCategoryId, 0, null, null, 0);
+                yield this.companyService.companyApplication(companyApplication);
+                res.status(200).json({
+                    status: true,
+                    message: 'Successfuly Company application'
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+        this.getNotAcceptedCompanyApplications = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const companyApplications = yield this.companyService.getNotAcceptedCompaynApplication();
+                res.status(200).json({
+                    status: true,
+                    applications: companyApplications
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
+        this.getCompanyApplicationById = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.body;
+                const companyApplication = yield this.companyService.getCompanyApplicationById(id);
+                res.status(200).json({
+                    status: true,
+                    companyApplication
+                });
             }
             catch (err) {
                 return next(err);

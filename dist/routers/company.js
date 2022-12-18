@@ -10,4 +10,6 @@ router.post('/new-company', imageUpload_1.companyAvatarUpload.single('avatar'), 
 router.post('/activate-company', auth_1.auth, companyController.activateCompanyById);
 router.post('/company-application', companyController.companyApplication);
 //router.post('/update-avatar', auth);
+router.get('/not-accepted-applications', auth_1.auth, companyController.getNotAcceptedCompanyApplications);
+router.get('/getCompanyApplicationById', auth_1.auth, companyController.getCompanyApplicationById);
 exports.default = router;

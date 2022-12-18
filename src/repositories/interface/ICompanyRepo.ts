@@ -1,5 +1,6 @@
 import { Connection } from "mysql2/promise";
 import { Company } from "../../models/Company";
+import { CompanyApplication } from "../../models/CompanyApplication";
 import { CompanySession } from "../../models/CompanySession";
 
 export interface ICompanyRepo {
@@ -13,5 +14,7 @@ export interface ICompanyRepo {
     insertCompanySession(conn: Connection, token: string, companyId: number): Promise<void>;
     removeSession(conn: Connection, token: string): Promise<void>;
     getCompanyBySessionId(conn: Connection, token: string): Promise<CompanySession | null>;
-
+    companyApplication(conn: Connection, companyApplication: CompanyApplication): Promise<void>;
+    getNotAcceptedCompanyApplications(conn: Connection): Promise<CompanyApplication[]>;
+    getCompanyApplicationById(conn: Connection, id: number): Promise<CompanyApplication | null>;
 }

@@ -8,6 +8,8 @@ import { User } from "../models/User";
 import { getFileExt } from "../utils/fileUtil";
 import {v4 as uuid} from 'uuid';
 import { CompanySession } from "../models/CompanySession";
+import { CompanyApplication } from "../models/CompanyApplication";
+import { CompanyMail } from "../mail/CompanyMail";
 
 
 
@@ -18,12 +20,29 @@ export class CompanyService implements ICompanyService {
 
     private static instance: CompanyService;
     private companyRepo!: CompanyRepo;
+    private companyMail!: CompanyMail;
 
     constructor(){
         this.companyRepo = CompanyRepo.getInstance();
         this.db = MysqlDB.getInstance();
+        this.companyMail = CompanyMail.getInstance();
     }
+    
 
+    async getNotAcceptedCompaynApplication(): Promise<CompanyApplication[]> {
+        let conn!: Connection;
+        try {
+            
+            conn = await this.db.getConnection();
+            const companyApplications: CompanyApplication[] = await this.companyRepo.getNotAcceptedCompanyApplications(conn);
+            this.db.closeConnection(conn, true);
+            return companyApplications;
+        } catch (err) {
+            this.db.closeConnection(conn, false);
+            throw err;
+        }
+    }
+    
     static getInstance(): CompanyService {
         if(!this.instance){
             this.instance = new CompanyService();
@@ -80,6 +99,22 @@ export class CompanyService implements ICompanyService {
         }
     }
 
+   async companyApplication(companyApplication: CompanyApplication): Promise<void> {
+        let conn!: Connection;
+        try {
+            conn = await this.db.getConnection();
+            await this.companyRepo.companyApplication(conn, companyApplication);
+            log.info('New company application is created...');
+            await this.companyMail.companyApplicationMail(companyApplication);
+            this.db.closeConnection(conn, true);
+        } catch(err) {
+            this.db.closeConnection(conn, false);
+            throw err;
+        }
+    }
+
+    
+
     async login(email: string, password: string): Promise<CompanySession | null> {
         let conn!: Connection;
         try {
@@ -112,4 +147,18 @@ export class CompanyService implements ICompanyService {
             throw err;
         }
     }
+
+    async getCompanyApplicationById(id: number): Promise<CompanyApplication | null> {
+       let conn!: Connection;
+       try {
+            conn = await this.db.getConnection();
+            const companyApplication: CompanyApplication | null = await this.companyRepo.getCompanyApplicationById(conn, id);
+            this.db.closeConnection(conn, true);
+            return companyApplication;
+       } catch (err) {
+           this.db.closeConnection(conn, false);
+           throw err;
+       }
+    }
+
 }

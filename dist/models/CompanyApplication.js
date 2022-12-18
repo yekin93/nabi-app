@@ -31,7 +31,7 @@ class CompanyApplication {
                     company_application.company_name company_application_company_name,
                     company_application.category_id company_application_category_id,
                     company_application.sales_category_id company_application_sales_category_id,
-                    company_application.accepted company_application_accepted,
+                    company_application.acccepted company_application_accepted,
                     company_application.modified_date company_application_modified_date,
                     company_application.created_date company_application_created_date,
                     company_application.is_deleted company_application_is_deleted`;

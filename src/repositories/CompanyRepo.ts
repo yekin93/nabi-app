@@ -4,9 +4,9 @@ import { ICompanyRepo } from "./interface/ICompanyRepo";
 import log from '../utils/logger';
 import { ICompany } from "../interfaces/ICompany";
 import { CompanySession } from "../models/CompanySession";
+import { CompanyApplication } from "../models/CompanyApplication";
 
 export class CompanyRepo implements ICompanyRepo {
-
     private static instance: CompanyRepo;
 
     static getInstance(): CompanyRepo {
@@ -85,4 +85,39 @@ export class CompanyRepo implements ICompanyRepo {
         });
         return companySession
     }
+
+
+    async companyApplication(conn: Connection, companyApplication: CompanyApplication): Promise<void> {
+        const query = `INSERT INTO company_application (first_name, surname, email, tel_number, country, city, post_code, company_name, category_id, sales_category_id, modified_date, created_date)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`;
+        console.log(companyApplication);
+        await conn.execute(query, [companyApplication.getFirstName,
+                                    companyApplication.getSurname,
+                                    companyApplication.getEmail,
+                                    companyApplication.getTelNumber,
+                                    companyApplication.getCountry,
+                                    companyApplication.getCity,
+                                    companyApplication.getPostCode,
+                                    companyApplication.getCompanyName,
+                                    companyApplication.getCategoryId,
+                                    companyApplication.getSalesCategoyId
+                                ]);
+    }
+
+    async getNotAcceptedCompanyApplications(conn: Connection): Promise<CompanyApplication[]> {
+        const query = `SELECT ${CompanyApplication.sql()} FROM company_application WHERE company_application.is_deleted = 0 AND company_application.acccepted = 0`;
+        const [rows] = await conn.execute<any[]>(query);
+        const companyApplications: CompanyApplication[] = [];
+        rows.map(row => companyApplications.push(CompanyApplication.row(row)));
+        return companyApplications;
+    }
+
+    async getCompanyApplicationById(conn: Connection, id: number): Promise<CompanyApplication | null> {
+        const query = `SELECT ${CompanyApplication.sql()} FROM company_application WHERE company_application.id = ? AND is_deleted = 0`;
+        const [rows] = await conn.execute<any[]>(query, [id]);
+        let companyApplication: CompanyApplication | null = null;
+        rows.map(row => companyApplication = CompanyApplication.row(row));
+        return companyApplication;
+    }
+    
 }

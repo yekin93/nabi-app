@@ -16,6 +16,7 @@ exports.CompanyRepo = void 0;
 const Company_1 = require("../models/Company");
 const logger_1 = __importDefault(require("../utils/logger"));
 const CompanySession_1 = require("../models/CompanySession");
+const CompanyApplication_1 = require("../models/CompanyApplication");
 class CompanyRepo {
     static getInstance() {
         if (!this.instance) {
@@ -99,6 +100,42 @@ class CompanyRepo {
                 companySession.setCompany = Company_1.Company.row(row);
             });
             return companySession;
+        });
+    }
+    companyApplication(conn, companyApplication) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `INSERT INTO company_application (first_name, surname, email, tel_number, country, city, post_code, company_name, category_id, sales_category_id, modified_date, created_date)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`;
+            console.log(companyApplication);
+            yield conn.execute(query, [companyApplication.getFirstName,
+                companyApplication.getSurname,
+                companyApplication.getEmail,
+                companyApplication.getTelNumber,
+                companyApplication.getCountry,
+                companyApplication.getCity,
+                companyApplication.getPostCode,
+                companyApplication.getCompanyName,
+                companyApplication.getCategoryId,
+                companyApplication.getSalesCategoyId
+            ]);
+        });
+    }
+    getNotAcceptedCompanyApplications(conn) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `SELECT ${CompanyApplication_1.CompanyApplication.sql()} FROM company_application WHERE company_application.is_deleted = 0 AND company_application.acccepted = 0`;
+            const [rows] = yield conn.execute(query);
+            const companyApplications = [];
+            rows.map(row => companyApplications.push(CompanyApplication_1.CompanyApplication.row(row)));
+            return companyApplications;
+        });
+    }
+    getCompanyApplicationById(conn, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `SELECT ${CompanyApplication_1.CompanyApplication.sql()} FROM company_application WHERE company_application.id = ? AND is_deleted = 0`;
+            const [rows] = yield conn.execute(query, [id]);
+            let companyApplication = null;
+            rows.map(row => companyApplication = CompanyApplication_1.CompanyApplication.row(row));
+            return companyApplication;
         });
     }
 }

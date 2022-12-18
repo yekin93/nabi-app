@@ -14,13 +14,13 @@ export class CompanyApplication {
     private categoryId: number;
     private salesCategoryId: number;
     private accepted: number;
-    private modifiedDate: Date;
-    private createdDate: Date;
+    private modifiedDate: Date | null;
+    private createdDate: Date | null;
     private isDeleted: number;
 
 
     constructor(id: number, firstName: string, surname: string, email: string, telNumber: string, country: string, city: string, postCode: string, companyName: string, categoryId: number, salesCategoryId: number,
-        accepted: number, modifiedDate: Date, createdDate: Date, isDeleted: number){
+        accepted: number, modifiedDate: Date | null, createdDate: Date | null, isDeleted: number){
             this.id = id;
             this.firstName = firstName;
             this.surname = surname;
@@ -50,7 +50,7 @@ export class CompanyApplication {
                     company_application.company_name company_application_company_name,
                     company_application.category_id company_application_category_id,
                     company_application.sales_category_id company_application_sales_category_id,
-                    company_application.accepted company_application_accepted,
+                    company_application.acccepted company_application_accepted,
                     company_application.modified_date company_application_modified_date,
                     company_application.created_date company_application_created_date,
                     company_application.is_deleted company_application_is_deleted`;
@@ -159,17 +159,17 @@ export class CompanyApplication {
             this.accepted = accepted;
         }
 
-        get getModifiedDate(): Date {
+        get getModifiedDate(): Date | null{
             return this.modifiedDate;
         }
-        set setModifiedDate(modifiedDate: Date) {
+        set setModifiedDate(modifiedDate: Date | null) {
             this.modifiedDate = modifiedDate;
         }
 
-        get getCreatedDate(): Date {
+        get getCreatedDate(): Date | null {
             return this.createdDate;
         }
-        set setCreatedDate(createdDate: Date) {
+        set setCreatedDate(createdDate: Date | null) {
             this.createdDate = createdDate;
         }
 

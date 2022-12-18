@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-
+import log from '../utils/logger';
 
 const transporter = nodemailer.createTransport({
     service: 'hotmail',
@@ -9,19 +9,11 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
-const mailOptions = {
-    from: 'yekin_zulfikar@outlook.com',
-    to: 'gsyekings@gmail.com',
-    subject: 'Test',
-    html:'<h1>Hello world</h1>'
-}
-
 export const sendMail = (recipient: string, mailOptions: any) => {
     transporter.sendMail(mailOptions, (err, data) => {
         if(err){
             throw err;
         }
-        console.log(data);
+        log.info("SUCCESSFULL Sent mail: " + JSON.stringify(data));
     });
 }

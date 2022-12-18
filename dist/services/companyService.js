@@ -8,16 +8,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyService = void 0;
 const mysql2_1 = require("../db/mysql2");
 const CompanyRepo_1 = require("../repositories/CompanyRepo");
+const logger_1 = __importDefault(require("../utils/logger"));
 const fileUtil_1 = require("../utils/fileUtil");
 const uuid_1 = require("uuid");
+const CompanyMail_1 = require("../mail/CompanyMail");
 class CompanyService {
     constructor() {
         this.companyRepo = CompanyRepo_1.CompanyRepo.getInstance();
         this.db = mysql2_1.MysqlDB.getInstance();
+        this.companyMail = CompanyMail_1.CompanyMail.getInstance();
+    }
+    getNotAcceptedCompaynApplication() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn;
+            try {
+                conn = yield this.db.getConnection();
+                const companyApplications = yield this.companyRepo.getNotAcceptedCompanyApplications(conn);
+                this.db.closeConnection(conn, true);
+                return companyApplications;
+            }
+            catch (err) {
+                this.db.closeConnection(conn, false);
+                throw err;
+            }
+        });
     }
     static getInstance() {
         if (!this.instance) {
@@ -80,6 +101,22 @@ class CompanyService {
             }
         });
     }
+    companyApplication(companyApplication) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn;
+            try {
+                conn = yield this.db.getConnection();
+                yield this.companyRepo.companyApplication(conn, companyApplication);
+                logger_1.default.info('New company application is created...');
+                yield this.companyMail.companyApplicationMail(companyApplication);
+                this.db.closeConnection(conn, true);
+            }
+            catch (err) {
+                this.db.closeConnection(conn, false);
+                throw err;
+            }
+        });
+    }
     login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             let conn;
@@ -110,6 +147,21 @@ class CompanyService {
                 conn = yield this.db.getConnection();
                 yield this.companyRepo.removeSession(conn, token);
                 this.db.closeConnection(conn, true);
+            }
+            catch (err) {
+                this.db.closeConnection(conn, false);
+                throw err;
+            }
+        });
+    }
+    getCompanyApplicationById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn;
+            try {
+                conn = yield this.db.getConnection();
+                const companyApplication = yield this.companyRepo.getCompanyApplicationById(conn, id);
+                this.db.closeConnection(conn, true);
+                return companyApplication;
             }
             catch (err) {
                 this.db.closeConnection(conn, false);
