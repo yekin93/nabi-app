@@ -138,5 +138,11 @@ class CompanyRepo {
             return companyApplication;
         });
     }
+    acceptCompanyApplicationById(conn, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = `UPDATE company_application SET acccepted = 1, modified_date = NOW() WHERE id = ?`;
+            conn.execute(query, [id]);
+        });
+    }
 }
 exports.CompanyRepo = CompanyRepo;

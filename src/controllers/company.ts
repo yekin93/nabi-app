@@ -98,4 +98,17 @@ export class CompanyController {
             return next(err);
         }
     }
+
+    acceptCompanyApplicationById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.body;
+            await this.companyService.acceptCompanyApplication(id);
+            res.status(200).json({
+                status: true,
+                message: 'Company Application is acceoted'
+            });
+        } catch (err) {
+            return next(err);
+        }
+    }
 }

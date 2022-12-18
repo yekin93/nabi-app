@@ -119,5 +119,11 @@ export class CompanyRepo implements ICompanyRepo {
         rows.map(row => companyApplication = CompanyApplication.row(row));
         return companyApplication;
     }
+
+
+    async acceptCompanyApplicationById(conn: Connection, id: number): Promise<void> {
+        const query = `UPDATE company_application SET acccepted = 1, modified_date = NOW() WHERE id = ?`;
+        conn.execute(query, [id]);
+    }
     
 }

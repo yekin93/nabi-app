@@ -12,5 +12,5 @@ router.post('/company-application', companyController.companyApplication);
 //router.post('/update-avatar', auth);
 router.get('/not-accepted-applications', auth, companyController.getNotAcceptedCompanyApplications);
 router.get('/getCompanyApplicationById', auth, companyController.getCompanyApplicationById);
-
+router.post('/acceptCompanyApplicationById', auth, companyController.acceptCompanyApplicationById);
 export default router;

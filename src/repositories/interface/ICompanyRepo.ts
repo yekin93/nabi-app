@@ -17,4 +17,5 @@ export interface ICompanyRepo {
     companyApplication(conn: Connection, companyApplication: CompanyApplication): Promise<void>;
     getNotAcceptedCompanyApplications(conn: Connection): Promise<CompanyApplication[]>;
     getCompanyApplicationById(conn: Connection, id: number): Promise<CompanyApplication | null>;
+    acceptCompanyApplicationById(conn: Connection, id: number): Promise<void>;
 }

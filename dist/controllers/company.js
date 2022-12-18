@@ -95,6 +95,19 @@ class CompanyController {
                 return next(err);
             }
         });
+        this.acceptCompanyApplicationById = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.body;
+                yield this.companyService.acceptCompanyApplication(id);
+                res.status(200).json({
+                    status: true,
+                    message: 'Company Application is acceoted'
+                });
+            }
+            catch (err) {
+                return next(err);
+            }
+        });
         this.companyService = companyService_1.CompanyService.getInstance();
     }
     static getInstance() {

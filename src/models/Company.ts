@@ -7,11 +7,11 @@ export class Company {
     private email: string;
     private isActive: number;
     private companyAvatar: string;
-    private modifiedTime: Date;
-    private createdTime: Date;
+    private modifiedTime: Date | null;
+    private createdTime: Date | null;
 
 
-    constructor(id: number, categoryId: number, name: string, email: string, isActive: number, companyAvatar: string, modifiedTime: Date, createdTime: Date) {
+    constructor(id: number, categoryId: number, name: string, email: string, isActive: number, companyAvatar: string, modifiedTime: Date | null, createdTime: Date | null) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -91,14 +91,14 @@ export class Company {
         this.isActive = isActive;
     }
 
-    get  getModifiedTime(): Date {
+    get  getModifiedTime(): Date | null {
         return this.modifiedTime;
     }
-    set setModifiedTime(modifiedTime: Date) {
+    set setModifiedTime(modifiedTime: Date | null) {
         this.modifiedTime = modifiedTime;
     }
 
-    get getCreatedTime(): Date {
+    get getCreatedTime(): Date | null {
         return this.createdTime;
     }
     set setCreatedTime(createdTime: Date) {

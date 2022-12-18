@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CompanyService = void 0;
 const mysql2_1 = require("../db/mysql2");
+const Company_1 = require("../models/Company");
 const CompanyRepo_1 = require("../repositories/CompanyRepo");
 const logger_1 = __importDefault(require("../utils/logger"));
 const fileUtil_1 = require("../utils/fileUtil");
@@ -162,6 +163,29 @@ class CompanyService {
                 const companyApplication = yield this.companyRepo.getCompanyApplicationById(conn, id);
                 this.db.closeConnection(conn, true);
                 return companyApplication;
+            }
+            catch (err) {
+                this.db.closeConnection(conn, false);
+                throw err;
+            }
+        });
+    }
+    acceptCompanyApplication(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let conn;
+            try {
+                conn = yield this.db.getConnection();
+                const companyApplication = yield this.companyRepo.getCompanyApplicationById(conn, id);
+                if (!companyApplication) {
+                    throw new Error('Company Application not found');
+                }
+                if ((companyApplication === null || companyApplication === void 0 ? void 0 : companyApplication.getAccepted) === 1) {
+                    throw new Error('Company Application already accepted.');
+                }
+                yield this.companyRepo.acceptCompanyApplicationById(conn, id);
+                const company = new Company_1.Company(0, companyApplication.getCategoryId, companyApplication.getCompanyName, companyApplication.getEmail, 1, "", null, null);
+                yield this.companyRepo.newCompany(conn, company, "123456789");
+                this.db.closeConnection(conn, true);
             }
             catch (err) {
                 this.db.closeConnection(conn, false);

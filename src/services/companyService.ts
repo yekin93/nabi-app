@@ -28,7 +28,6 @@ export class CompanyService implements ICompanyService {
         this.companyMail = CompanyMail.getInstance();
     }
     
-
     async getNotAcceptedCompaynApplication(): Promise<CompanyApplication[]> {
         let conn!: Connection;
         try {
@@ -159,6 +158,27 @@ export class CompanyService implements ICompanyService {
            this.db.closeConnection(conn, false);
            throw err;
        }
+    }
+
+    async acceptCompanyApplication(id: number): Promise<void> {
+        let conn!: Connection;
+        try {
+            conn = await this.db.getConnection();
+            const companyApplication: CompanyApplication | null = await this.companyRepo.getCompanyApplicationById(conn, id);
+            if(!companyApplication){
+                throw new Error('Company Application not found');
+            }
+            if(companyApplication?.getAccepted === 1){
+                throw new Error('Company Application already accepted.');
+            }
+            await this.companyRepo.acceptCompanyApplicationById(conn, id);
+            const company: Company = new Company(0, companyApplication.getCategoryId, companyApplication.getCompanyName, companyApplication.getEmail, 1, "", null, null);
+            await this.companyRepo.newCompany(conn, company, "123456789");
+            this.db.closeConnection(conn, true);
+        } catch (err) {
+            this.db.closeConnection(conn, false);
+            throw err;
+        }
     }
 
 }

@@ -13,4 +13,5 @@ export interface ICompanyService {
     companyApplication(companyApplication: CompanyApplication): Promise<void>;
     getNotAcceptedCompaynApplication(): Promise<CompanyApplication[]>;
     getCompanyApplicationById(id: number): Promise<CompanyApplication | null>;
+    acceptCompanyApplication(id: number): Promise<void>;
 }
